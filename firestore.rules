@@ -1,0 +1,15 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Nur diese beiden Google-Konten dürfen lesen und schreiben.
+    // Die Beispieladressen durch eure echten Google-Adressen ersetzen.
+    function istUnserPaar() {
+      return request.auth != null
+        && request.auth.token.email_verified == true
+        && request.auth.token.email in ['erste.person@gmail.com', 'zweite.person@gmail.com'];
+    }
+    match /{document=**} {
+      allow read, write: if istUnserPaar();
+    }
+  }
+}
